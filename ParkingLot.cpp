@@ -1,5 +1,6 @@
 #include "ParkingLot.h"
 #include <algorithm>
+#include <iostream>
 
 ParkingLot::ParkingLot(int capacity) : maxCapacity(capacity), currentCount(0) {
     // Initialize the parking lot with a given capacity
@@ -17,6 +18,7 @@ bool ParkingLot::parkVehicle(Vehicle* vehicle) {
         currentCount++;
         return true;
     } else {
+        std::cout << "The parking lot is full. Cannot park the vehicle.\n";
         return false; // Parking lot is full
     }
 }
@@ -33,6 +35,7 @@ bool ParkingLot::unparkVehicle(int vehicleID) {
         currentCount--;
         return true;
     } else {
+        std::cout << "Vehicle not in the lot\n";
         return false; // Vehicle not found in the parking lot
     }
 }
