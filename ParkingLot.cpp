@@ -68,4 +68,3 @@ void ParkingLot::clear() {
     vehicles.clear();
     currentCount = 0;
 }
-

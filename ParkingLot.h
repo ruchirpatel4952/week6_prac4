@@ -1,13 +1,14 @@
 #ifndef PARKINGLOT_H
 #define PARKINGLOT_H
 
+#include <vector>
 #include "Vehicle.h"
 
 class ParkingLot {
 private:
     int maxCapacity;
     int currentCount;
-    Vehicle** vehicles;
+    std::vector<Vehicle*> vehicles;
 
 public:
     ParkingLot(int capacity);
@@ -15,8 +16,9 @@ public:
 
     bool parkVehicle(Vehicle* vehicle);
     bool unparkVehicle(int vehicleID);
-    int getCount() const;
     int countOverstayingVehicles(int maxParkingDuration) const;
+    int getCount() const;
+    void clear(); // Declare the clear function
 };
 
 #endif // PARKINGLOT_H

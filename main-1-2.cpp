@@ -1,60 +1,50 @@
 #include <iostream>
-#include "ParkingLot.h"
 #include "Vehicle.h"
 #include "Car.h"
 #include "Bus.h"
 #include "Motorbike.h"
+#include "ParkingLot.h"
 
 int main() {
     int capacity;
-    ParkingLot parkingLot(10);
+    std::cout << "Enter the capacity of the parking lot: ";
+    std::cin >> capacity;
 
-    int choice;
-    while (true) {
-        std::cout << "\nSelect an option:\n";
-        std::cout << "1. Park a vehicle\n";
-        std::cout << "2. Unpark a vehicle\n";
-        std::cout << "3. Exit\n";
-        std::cout << "Enter your choice: ";
-        std::cin >> choice;
+    ParkingLot parkingLot(capacity);
 
-        if (choice == 1) {
-            int vehicleType, vehicleID;
-            std::cout << "\nSelect a vehicle type:\n";
-            std::cout << "1. Car\n";
-            std::cout << "2. Bus\n";
-            std::cout << "3. Motorbike\n";
-            std::cout << "Enter your choice: ";
-            std::cin >> vehicleType;
+    int numCars, numBuses, numMotorbikes;
+    std::cout << "Enter the number of cars to park: ";
+    std::cin >> numCars;
+    std::cout << "Enter the number of buses to park: ";
+    std::cin >> numBuses;
+    std::cout << "Enter the number of motorbikes to park: ";
+    std::cin >> numMotorbikes;
 
-            std::cout << "Enter vehicle ID: ";
-            std::cin >> vehicleID;
-
-            Vehicle* vehicle;
-            if (vehicleType == 1) {
-                vehicle = new Car(vehicleID);
-            } else if (vehicleType == 2) {
-                vehicle = new Bus(vehicleID);
-            } else if (vehicleType == 3) {
-                vehicle = new Motorbike(vehicleID);
-            } else {
-                std::cout << "Invalid vehicle type.\n";
-                continue;
-            }
-
-            parkingLot.parkVehicle(vehicle);
-            std::cout << "Vehicle with ID " << vehicleID << " parked successfully.\n";
-        } else if (choice == 2) {
-            int vehicleID;
-            std::cout << "Enter vehicle ID to unpark: ";
-            std::cin >> vehicleID;
-            parkingLot.unparkVehicle(vehicleID);
-        } else if (choice == 3) {
-            break;
-        } else {
-            std::cout << "Invalid choice. Please enter a valid option.\n";
-        }
+    for (int i = 1; i <= numCars; ++i) {
+        Car* car = new Car(i);
+        parkingLot.parkVehicle(car);
     }
+
+    for (int i = 1; i <= numBuses; ++i) {
+        Bus* bus = new Bus(i);
+        parkingLot.parkVehicle(bus);
+    }
+
+    for (int i = 1; i <= numMotorbikes; ++i) {
+        Motorbike* motorbike = new Motorbike(i);
+        parkingLot.parkVehicle(motorbike);
+    }
+
+    std::cout << "\nCounting overstaying vehicles:\n";
+    int maxParkingDuration;
+    std::cout << "Enter the maximum allowed parking duration (in seconds): ";
+    std::cin >> maxParkingDuration;
+
+    int overstayingCount = parkingLot.countOverstayingVehicles(maxParkingDuration);
+    std::cout << "Number of vehicles overstaying: " << overstayingCount << "\n";
+
+    // Clean up dynamically allocated memory
+    parkingLot.clear();
 
     return 0;
 }
