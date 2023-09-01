@@ -1,85 +1,72 @@
 #include <iostream>
-#include <ctime>
 #include <vector>
-#include <memory>
-
-class Vehicle {
-private:
-    std::time_t timeOfEntry;
-    int ID;
-
-public:
-    Vehicle(int id) : ID(id) {
-        timeOfEntry = std::time(nullptr);
-    }
-
-    int getID() const {
-        return ID;
-    }
-
-    int getParkingDuration() const {
-        std::time_t currentTime = std::time(nullptr);
-        return static_cast<int>(currentTime - timeOfEntry);
-    }
-};
-
-class Car : public Vehicle {
-public:
-    Car(int id) : Vehicle(id) {}
-
-    int getParkingDuration() const {
-        int baseDuration = Vehicle::getParkingDuration();
-        return static_cast<int>(baseDuration * 0.9);
-    }
-};
-
-class Bus : public Vehicle {
-public:
-    Bus(int id) : Vehicle(id) {}
-
-    int getParkingDuration() const {
-        int baseDuration = Vehicle::getParkingDuration();
-        return static_cast<int>(baseDuration * 0.75);
-    }
-};
-
-class Motorbike : public Vehicle {
-public:
-    Motorbike(int id) : Vehicle(id) {}
-
-    int getParkingDuration() const {
-        int baseDuration = Vehicle::getParkingDuration();
-        return static_cast<int>(baseDuration * 0.85);
-    }
-};
+#include "Vehicle.h"
+#include "Car.h"
+#include "Bus.h"
+#include "Motorbike.h"
+#include "ParkingLot.h"
 
 int main() {
-    int numCars, numBuses, numMotorbikes;
+    int capacity;
+    std::cout << "Enter the capacity of the parking lot: ";
+    std::cin >> capacity;
 
-    std::cout << "Enter the number of cars: ";
-    std::cin >> numCars;
-    std::cout << "Enter the number of buses: ";
-    std::cin >> numBuses;
-    std::cout << "Enter the number of motorbikes: ";
-    std::cin >> numMotorbikes;
+    ParkingLot parkingLot(capacity);
 
-    std::vector<std::unique_ptr<Vehicle>> vehicles;
+    int choice;
+    while (true) {
+        std::cout << "\nSelect an option:\n";
+        std::cout << "1. Park a vehicle\n";
+        std::cout << "2. Unpark a vehicle\n";
+        std::cout << "3. Exit\n";
+        std::cout << "Enter your choice: ";
+        std::cin >> choice;
 
-    for (int i = 1; i <= numCars; ++i) {
-        vehicles.push_back(std::make_unique<Car>(i));
-    }
+        if (choice == 1) {
+            int vehicleType, vehicleID;
+            std::cout << "\nSelect a vehicle type:\n";
+            std::cout << "1. Car\n";
+            std::cout << "2. Bus\n";
+            std::cout << "3. Motorbike\n";
+            std::cout << "Enter your choice: ";
+            std::cin >> vehicleType;
 
-    for (int i = 1; i <= numBuses; ++i) {
-        vehicles.push_back(std::make_unique<Bus>(i));
-    }
+            std::cout << "Enter vehicle ID: ";
+            std::cin >> vehicleID;
 
-    for (int i = 1; i <= numMotorbikes; ++i) {
-        vehicles.push_back(std::make_unique<Motorbike>(i));
-    }
+            Vehicle* vehicle;
+            if (vehicleType == 1) {
+                vehicle = new Car(vehicleID);
+            } else if (vehicleType == 2) {
+                vehicle = new Bus(vehicleID);
+            } else if (vehicleType == 3) {
+                vehicle = new Motorbike(vehicleID);
+            } else {
+                std::cout << "Invalid vehicle type.\n";
+                continue;
+            }
 
-    std::cout << "\nParking Durations:\n";
-    for (const auto& vehicle : vehicles) {
-        std::cout << "Vehicle ID: " << vehicle->getID() << " - Parking Duration: " << vehicle->getParkingDuration() << " seconds\n";
+            if (parkingLot.parkVehicle(vehicle)) {
+                std::cout << "Vehicle with ID " << vehicleID << " parked successfully.\n";
+            } else {
+                std::cout << "The parking lot is full. Cannot park the vehicle.\n";
+                delete vehicle; // Clean up the dynamically allocated memory
+            }
+        } else if (choice == 2) {
+            int vehicleID;
+            std::cout << "Enter vehicle ID to unpark: ";
+            std::cin >> vehicleID;
+
+            if (parkingLot.unparkVehicle(vehicleID)) {
+                std::cout << "Vehicle with ID " << vehicleID << " has been unparked.\n";
+            } else {
+                std::cout << "Vehicle with ID " << vehicleID << " is not in the parking lot.\n";
+            }
+        } else if (choice == 3) {
+            break;
+        } else {
+            std::cout << "Invalid choice. Please enter a valid option.\n";
+        }
     }
 
     return 0;
