@@ -7,10 +7,7 @@
 
 int main() {
     int capacity;
-    std::cout << "Enter the capacity of the parking lot: ";
-    std::cin >> capacity;
-
-    ParkingLot parkingLot(capacity);
+    ParkingLot parkingLot(10);
 
     int choice;
     while (true) {
