@@ -1,69 +1,80 @@
 #include "ParkingLot.h"
-#include <algorithm>
 #include <iostream>
 
 ParkingLot::ParkingLot(int capacity) : maxCapacity(capacity), currentCount(0) {
-    // Initialize the parking lot with a given capacity
-    vehicles.reserve(maxCapacity);
+    vehicles = new Vehicle*[maxCapacity];
 }
 
 ParkingLot::~ParkingLot() {
-    // Clean up dynamically allocated memory for parked vehicles
-    clear();
+    for (int i = 0; i < currentCount; ++i) {
+        delete vehicles[i];
+    }
+    delete[] vehicles;
 }
 
 bool ParkingLot::parkVehicle(Vehicle* vehicle) {
     if (currentCount < maxCapacity) {
-        vehicles.push_back(vehicle);
-        currentCount++;
-        return true;
+        vehicles[currentCount++] = vehicle;
+        return true; // Vehicle parked successfully
     } else {
-        std::cout << "The parking lot is full. Cannot park the vehicle.\n";
+        std::cout << "The parking lot is full" << std::endl;
         return false; // Parking lot is full
     }
 }
 
 bool ParkingLot::unparkVehicle(int vehicleID) {
-    auto it = std::remove_if(vehicles.begin(), vehicles.end(),
-                             [vehicleID](Vehicle* vehicle) {
-                                 return vehicle->getID() == vehicleID;
-                             });
-
-    if (it != vehicles.end()) {
-        delete *it; // Clean up the memory of the removed vehicle
-        vehicles.erase(it, vehicles.end());
-        currentCount--;
-        return true;
-    } else {
-        std::cout << "Vehicle not in the lot\n";
-        return false; // Vehicle not found in the parking lot
-    }
-}
-
-int ParkingLot::countOverstayingVehicles(int maxParkingDuration) const {
-    int overstayingCount = 0;
-    std::time_t currentTime = std::time(nullptr);
-
-    for (const auto& vehicle : vehicles) {
-        int parkingDuration = vehicle->getParkingDuration();
-        if (parkingDuration > maxParkingDuration) {
-            overstayingCount++;
+    for (int i = 0; i < currentCount; ++i) {
+        if (vehicles[i]->getID() == vehicleID) {
+            delete vehicles[i];
+            vehicles[i] = vehicles[currentCount - 1];
+            currentCount--;
+            return true; // Vehicle removed successfully
         }
     }
-
-    return overstayingCount;
+    std::cout << "Vehicle not in the lot" << std::endl;
+    return false; // Vehicle not found in the parking lot
 }
 
 int ParkingLot::getCount() const {
     return currentCount;
 }
+#include "ParkingLot.h"
+#include <iostream>
 
-void ParkingLot::clear() {
-    // Clean up dynamically allocated memory for all parked vehicles
-    for (const auto& vehicle : vehicles) {
-        delete vehicle;
+ParkingLot::ParkingLot(int capacity) : maxCapacity(capacity), currentCount(0) {
+    vehicles = new Vehicle*[maxCapacity];
+}
+
+ParkingLot::~ParkingLot() {
+    for (int i = 0; i < currentCount; ++i) {
+        delete vehicles[i];
     }
+    delete[] vehicles;
+}
 
-    vehicles.clear();
-    currentCount = 0;
+bool ParkingLot::parkVehicle(Vehicle* vehicle) {
+    if (currentCount < maxCapacity) {
+        vehicles[currentCount++] = vehicle;
+        return true; // Vehicle parked successfully
+    } else {
+        std::cout << "The parking lot is full" << std::endl;
+        return false; // Parking lot is full
+    }
+}
+
+bool ParkingLot::unparkVehicle(int vehicleID) {
+    for (int i = 0; i < currentCount; ++i) {
+        if (vehicles[i]->getID() == vehicleID) {
+            delete vehicles[i];
+            vehicles[i] = vehicles[currentCount - 1];
+            currentCount--;
+            return true; // Vehicle removed successfully
+        }
+    }
+    std::cout << "Vehicle not in the lot" << std::endl;
+    return false; // Vehicle not found in the parking lot
+}
+
+int ParkingLot::getCount() const {
+    return currentCount;
 }
