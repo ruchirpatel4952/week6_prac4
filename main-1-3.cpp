@@ -34,7 +34,7 @@ int main() {
         }
 
         if (!parkingLot.parkVehicle(vehicle)) {
-            std::cout << "The parking lot is full" << std::endl;
+            std::cout << "The lot is full" << std::endl;
             delete vehicle; // Clean up the dynamically allocated memory
         }
     }
