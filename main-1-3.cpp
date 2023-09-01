@@ -1,5 +1,4 @@
 #include <iostream>
-#include <vector>
 #include "Vehicle.h"
 #include "Car.h"
 #include "Bus.h"
@@ -7,45 +6,47 @@
 #include "ParkingLot.h"
 
 int main() {
-    int capacity;
-    std::cout << "Enter the capacity of the parking lot: ";
-    std::cin >> capacity;
+    int capacity = 10; // Set the capacity of the parking lot
 
-    ParkingLot parkingLot(capacity);
+    ParkingLot parkingLot(capacity); // Create a parking lot object
 
-    int numCars, numBuses, numMotorbikes;
-    std::cout << "Enter the number of cars to park: ";
-    std::cin >> numCars;
-    std::cout << "Enter the number of buses to park: ";
-    std::cin >> numBuses;
-    std::cout << "Enter the number of motorbikes to park: ";
-    std::cin >> numMotorbikes;
+    // Park vehicles in the parking lot until it's full
+    while (parkingLot.getCount() < capacity) {
+        int vehicleType;
+        int vehicleID;
 
-    for (int i = 1; i <= numCars; ++i) {
-        Car* car = new Car(i);
-        parkingLot.parkVehicle(car);
+        std::cout << "Enter the vehicle type (1 for Car, 2 for Bus, 3 for Motorbike): ";
+        std::cin >> vehicleType;
+
+        std::cout << "Enter the vehicle ID: ";
+        std::cin >> vehicleID;
+
+        Vehicle* vehicle;
+        if (vehicleType == 1) {
+            vehicle = new Car(vehicleID);
+        } else if (vehicleType == 2) {
+            vehicle = new Bus(vehicleID);
+        } else if (vehicleType == 3) {
+            vehicle = new Motorbike(vehicleID);
+        } else {
+            std::cout << "Invalid vehicle type." << std::endl;
+            continue;
+        }
+
+        if (!parkingLot.parkVehicle(vehicle)) {
+            std::cout << "The parking lot is full" << std::endl;
+            delete vehicle; // Clean up the dynamically allocated memory
+        }
     }
 
-    for (int i = 1; i <= numBuses; ++i) {
-        Bus* bus = new Bus(i);
-        parkingLot.parkVehicle(bus);
-    }
-
-    for (int i = 1; i <= numMotorbikes; ++i) {
-        Motorbike* motorbike = new Motorbike(i);
-        parkingLot.parkVehicle(motorbike);
-    }
-
-    std::cout << "\nCounting overstaying vehicles:\n";
-    int maxParkingDuration;
-    std::cout << "Enter the maximum allowed parking duration (in seconds): ";
-    std::cin >> maxParkingDuration;
-
+    // Count overstaying vehicles with a max parking duration of 15 seconds
+    int maxParkingDuration = 15;
     int overstayingCount = parkingLot.countOverstayingVehicles(maxParkingDuration);
-    std::cout << "Number of vehicles overstaying: " << overstayingCount << "\n";
+
+    std::cout << "Number of vehicles overstaying: " << overstayingCount << std::endl;
 
     // Clean up dynamically allocated memory
-    parkingLot.clear();
+    parkingLot.~ParkingLot();
 
     return 0;
 }
