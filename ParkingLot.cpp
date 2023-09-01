@@ -40,6 +40,7 @@ bool ParkingLot::unparkVehicle(int vehicleID) {
     }
 }
 
+
 int ParkingLot::countOverstayingVehicles(int maxParkingDuration) const {
     int overstayingCount = 0;
     std::time_t currentTime = std::time(nullptr);
